@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import BottomMenu from "./components/BottomMenu";
+import HomeScreen from "./components/HomeScreen";
 import DrawerMenu from "./components/DrawerMenu";
 import { defaultColors } from "./colors";
 
@@ -36,15 +36,6 @@ function App() {
     await AsyncStorage.setItem("menuColors", JSON.stringify(updatedColors));
   };
 
-  const HomeScreen = () => {
-    return (
-      <View style={[styles.container, { backgroundColor }]}>
-        <Text style={styles.colorName}>{backgroundColor}</Text>
-        <BottomMenu colors={menuColors} onColorSelect={setBackgroundColor} />
-      </View>
-    );
-  };
-
   return (
     <NavigationContainer>
       <Drawer.Navigator
@@ -57,7 +48,16 @@ function App() {
           />
         )}
       >
-        <Drawer.Screen name="Inicio" component={HomeScreen} />
+        <Drawer.Screen name="Inicio">
+        {(props) => (
+          <HomeScreen
+            {...props}
+            backgroundColor={backgroundColor}
+            menuColors={menuColors}
+            setBackgroundColor={setBackgroundColor}
+          />
+        )}
+      </Drawer.Screen>
       </Drawer.Navigator>
     </NavigationContainer>
   );
