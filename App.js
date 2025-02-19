@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { StyleSheet, Vibration } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,6 +49,7 @@ function App() {
 
   const handleSetBackgroundColor = async (color) => {
     setBackgroundColor(color);
+    Vibration.vibrate(300);
     setChangeCount((prevCount) => {
       const newCount = prevCount + 1;
       AsyncStorage.setItem("changeCount", JSON.stringify(newCount));
