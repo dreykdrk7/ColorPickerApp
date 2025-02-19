@@ -1,28 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import ConfirmationAlert from "./ConfirmationAlert";
 
 const DrawerMenu = ({ menuColors, onReset, onChangeColor }) => {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Opciones</Text>
-  
-        <TouchableOpacity style={styles.option} onPress={onReset}>
-          <Text>🔄 Reiniciar</Text>
-        </TouchableOpacity>
-  
-        <Text style={styles.subTitle}>Modificar colores:</Text>
-        <View style={styles.colorContainer}>
-          {menuColors.map((color, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.colorBox, { backgroundColor: color }]}
-              onPress={() => onChangeColor(index)}
-            />
-          ))}
-        </View>
-      </View>
-    );
+
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleConfirm = () => {
+    setShowConfirmation(false);
+    onReset();
   };
+
+  const handleCancel = () => {
+    setShowConfirmation(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Opciones</Text>
+
+      <TouchableOpacity
+        style={styles.option}
+        onPress={() => setShowConfirmation(true)}
+      >
+        <Text>🔄 Reiniciar</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.subTitle}>Modificar colores:</Text>
+      <View style={styles.colorContainer}>
+        {menuColors.map((color, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.colorBox, { backgroundColor: color }]}
+            onPress={() => onChangeColor(index)}
+          />
+        ))}
+      </View>
+
+      {showConfirmation && (
+        <ConfirmationAlert
+          visible={showConfirmation}
+          title="Confirmar"
+          message="¿Seguro que quieres reiniciar los colores?"
+          onCancel={handleCancel}
+          onConfirm={handleConfirm}
+        />
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
