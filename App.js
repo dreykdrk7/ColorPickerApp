@@ -1,20 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import BottomMenu from "./components/BottomMenu";
+import DrawerMenu from "./components/DrawerMenu";
+import { defaultColors } from "./colors";
 
-export default function App() {
+const Drawer = createDrawerNavigator();
+
+function App() {
+  const [backgroundColor, setBackgroundColor] = useState("#FFFFFF");
+  const [menuColors, setMenuColors] = useState(defaultColors);
+
+  useEffect(() => {
+    const loadColors = async () => {
+      const storedColors = await AsyncStorage.getItem("menuColors");
+      setMenuColors(storedColors ? JSON.parse(storedColors) : defaultColors);
+    };
+    loadColors();
+  }, []);
+
+  const handleReset = async () => {
+    setBackgroundColor("#FFFFFF");
+    setMenuColors(defaultColors);
+    await AsyncStorage.removeItem("menuColors");
+  };
+
+  const HomeScreen = () => {
+    return (
+      <View style={[styles.container, { backgroundColor }]}>
+        <BottomMenu colors={menuColors} onColorSelect={setBackgroundColor} />
+      </View>
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Drawer.Navigator drawerContent={(props) => <DrawerMenu {...props} onReset={handleReset} />}>
+        <Drawer.Screen name="Inicio" component={HomeScreen} />
+      </Drawer.Navigator>
+    </NavigationContainer>
   );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "flex-end",
   },
 });
