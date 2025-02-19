@@ -21,11 +21,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: 10,
     backgroundColor: "#333",
+    borderRadius: 15,
   },
   colorBox: {
     width: 40,
     height: 40,
-    borderRadius: 5,
+    borderRadius: 25,
   },
 });
 

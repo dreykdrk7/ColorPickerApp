@@ -52,11 +52,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   counterText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: "center",
   },
   colorName: {
-    fontSize: 24,
+    fontSize: 22,
     textAlign: "center",
   },
 });

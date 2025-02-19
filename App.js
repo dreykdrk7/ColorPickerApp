@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     padding: 20,
+    fontFamily: "Roboto",
   },
   colorName: {
     fontSize: 24,
