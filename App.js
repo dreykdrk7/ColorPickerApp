@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -39,6 +39,7 @@ function App() {
   const HomeScreen = () => {
     return (
       <View style={[styles.container, { backgroundColor }]}>
+        <Text style={styles.colorName}>{backgroundColor}</Text>
         <BottomMenu colors={menuColors} onColorSelect={setBackgroundColor} />
       </View>
     );
@@ -68,5 +69,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
+    padding: 20,
+  },
+  colorName: {
+    fontSize: 24,
+    color: "#000",
+    textAlign: "center",
+    marginBottom: 10,
   },
 });
