@@ -13,6 +13,17 @@ const Drawer = createDrawerNavigator();
 function App() {
   const [backgroundColor, setBackgroundColor] = useState("#FFFFFF");
   const [menuColors, setMenuColors] = useState(defaultColors);
+  const [changeCount, setChangeCount] = useState(0);
+
+  useEffect(() => {
+    const loadCount = async () => {
+      const storedCount = await AsyncStorage.getItem("changeCount");
+      if (storedCount !== null) {
+        setChangeCount(JSON.parse(storedCount));
+      }
+    };
+    loadCount();
+  }, []);
 
   useEffect(() => {
     const loadColors = async () => {
@@ -36,6 +47,15 @@ function App() {
     await AsyncStorage.setItem("menuColors", JSON.stringify(updatedColors));
   };
 
+  const handleSetBackgroundColor = async (color) => {
+    setBackgroundColor(color);
+    setChangeCount((prevCount) => {
+      const newCount = prevCount + 1;
+      AsyncStorage.setItem("changeCount", JSON.stringify(newCount));
+      return newCount;
+    });
+  };
+
   return (
     <NavigationContainer>
       <Drawer.Navigator
@@ -54,7 +74,8 @@ function App() {
             {...props}
             backgroundColor={backgroundColor}
             menuColors={menuColors}
-            setBackgroundColor={setBackgroundColor}
+            setBackgroundColor={handleSetBackgroundColor}
+            changeCount={changeCount}
           />
         )}
       </Drawer.Screen>

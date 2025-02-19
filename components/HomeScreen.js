@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import BottomMenu from "./BottomMenu";
 
-const HomeScreen = ({ backgroundColor, menuColors, setBackgroundColor }) => {
+const HomeScreen = ({ backgroundColor, menuColors, setBackgroundColor, changeCount }) => {
   const progress = useSharedValue(0);
   const [prevColor, setPrevColor] = useState(backgroundColor);
 
@@ -32,6 +32,9 @@ const HomeScreen = ({ backgroundColor, menuColors, setBackgroundColor }) => {
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
+      <View style={styles.topContainer}>
+        <Text style={styles.counterText}>Cambios de color: {changeCount}</Text>
+      </View>
       <Text style={styles.colorName}>{backgroundColor}</Text>
       <BottomMenu colors={menuColors} onColorSelect={setBackgroundColor} />
     </Animated.View>
@@ -41,13 +44,20 @@ const HomeScreen = ({ backgroundColor, menuColors, setBackgroundColor }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     padding: 20,
+  },
+  topContainer: {
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  counterText: {
+    fontSize: 18,
+    textAlign: "center",
   },
   colorName: {
     fontSize: 24,
     textAlign: "center",
-    marginBottom: 10,
   },
 });
 
