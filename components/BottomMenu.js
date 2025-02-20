@@ -1,10 +1,19 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
 
 const BottomMenu = ({ colors, onColorSelect }) => {
   return (
     <View style={styles.container}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false} 
+        contentContainerStyle={[
+          styles.scrollContainer,
+          { minWidth: screenWidth },
+          ]}
+      >
         {colors.map((color, index) => (
           <TouchableOpacity
             key={index}
@@ -19,20 +28,21 @@ const BottomMenu = ({ colors, onColorSelect }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
+    padding: 13,
     backgroundColor: "#333",
     borderRadius: 15,
   },
   scrollContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1,
   },
   colorBox: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 25,
+    marginHorizontal: 6,
   },
 });
 
