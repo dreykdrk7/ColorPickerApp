@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Animated } from "react-native";
 import ConfirmationAlert from "./ConfirmationAlert";
 
 const DrawerMenu = ({ onReset, onChangeColor, onAddColor, onRemoveColor, menuColors }) => {
@@ -23,6 +23,28 @@ const DrawerMenu = ({ onReset, onChangeColor, onAddColor, onRemoveColor, menuCol
     loadColors();
   }, []);
 
+  const animatedOpacity = useRef(new Animated.Value(1)).current;
+
+  const handleRemoveColor = (index) => {
+    Animated.timing(animatedOpacity, {
+      toValue: 0,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start(() => {
+      onRemoveColor(index);
+      animatedOpacity.setValue(1);
+    });
+  };
+
+  const handleAddColor = () => {
+    onAddColor();
+    Animated.timing(animatedOpacity, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Opciones</Text>
@@ -40,19 +62,19 @@ const DrawerMenu = ({ onReset, onChangeColor, onAddColor, onRemoveColor, menuCol
         data={menuColors}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <View style={styles.colorItem}>
+          <Animated.View style={[styles.colorItem, { opacity: animatedOpacity }]}>
             <View style={[styles.colorBox, { backgroundColor: item }]} />
             <TouchableOpacity style={styles.editButton} onPress={() => onChangeColor(index)}>
               <Text style={styles.editText}>🎨</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={() => onRemoveColor(index)}>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveColor(index)}>
               <Text style={styles.deleteText}>🗑️</Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         )}
       />
 
-      <TouchableOpacity style={styles.addButton} onPress={onAddColor}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddColor}>
         <Text style={styles.addText}>➕ Agregar Color</Text>
       </TouchableOpacity>
 
@@ -93,16 +115,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 5,
   },
-  colorContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 10,
-  },
   colorBox: {
     width: 40,
     height: 40,
     margin: 5,
     borderRadius: 5,
+  },
+  editButton: {
+    marginLeft: 10,
+    backgroundColor: "blue",
+    padding: 5,
+    borderRadius: 5,
+  },
+  editText: {
+    color: "white",
+    fontWeight: "bold",
   },
   deleteButton: {
     marginLeft: 10,
