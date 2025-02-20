@@ -47,6 +47,22 @@ function App() {
     await AsyncStorage.setItem("menuColors", JSON.stringify(updatedColors));
   };
 
+  // ✅ Función para añadir un nuevo color
+  const handleAddColor = async () => {
+    const newColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    const updatedColors = [...menuColors, newColor];
+    setMenuColors(updatedColors);
+    await AsyncStorage.setItem("menuColors", JSON.stringify(updatedColors));
+  };
+
+  // ✅ Función para eliminar un color del menú
+  const handleRemoveColor = async (index) => {
+    const updatedColors = [...menuColors];
+    updatedColors.splice(index, 1);
+    setMenuColors(updatedColors);
+    await AsyncStorage.setItem("menuColors", JSON.stringify(updatedColors));
+  };
+
   const handleSetBackgroundColor = async (color) => {
     setBackgroundColor(color);
     Vibration.vibrate(300);
@@ -63,23 +79,25 @@ function App() {
         drawerContent={(props) => (
           <DrawerMenu
             {...props}
-            menuColors={menuColors}
             onReset={handleReset}
             onChangeColor={handleChangeColor}
+            onAddColor={handleAddColor} // ✅ Pasamos la función para añadir
+            onRemoveColor={handleRemoveColor} // ✅ Pasamos la función para eliminar
+            menuColors={menuColors} // ✅ Pasamos los colores actuales
           />
         )}
       >
         <Drawer.Screen name="Inicio">
-        {(props) => (
-          <HomeScreen
-            {...props}
-            backgroundColor={backgroundColor}
-            menuColors={menuColors}
-            setBackgroundColor={handleSetBackgroundColor}
-            changeCount={changeCount}
-          />
-        )}
-      </Drawer.Screen>
+          {(props) => (
+            <HomeScreen
+              {...props}
+              backgroundColor={backgroundColor}
+              menuColors={menuColors}
+              setBackgroundColor={handleSetBackgroundColor}
+              changeCount={changeCount}
+            />
+          )}
+        </Drawer.Screen>
       </Drawer.Navigator>
     </NavigationContainer>
   );

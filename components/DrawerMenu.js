@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import ConfirmationAlert from "./ConfirmationAlert";
 
-const DrawerMenu = ({ menuColors, onReset, onChangeColor }) => {
+const DrawerMenu = ({ onReset, onChangeColor, onAddColor, onRemoveColor, menuColors }) => {
 
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -14,6 +14,14 @@ const DrawerMenu = ({ menuColors, onReset, onChangeColor }) => {
   const handleCancel = () => {
     setShowConfirmation(false);
   };
+
+  useEffect(() => {
+    const loadColors = async () => {
+      const storedColors = await AsyncStorage.getItem("menuColors");
+      setMenuColors(storedColors ? JSON.parse(storedColors) : defaultColors);
+    };
+    loadColors();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -27,15 +35,26 @@ const DrawerMenu = ({ menuColors, onReset, onChangeColor }) => {
       </TouchableOpacity>
 
       <Text style={styles.subTitle}>Modificar colores:</Text>
-      <View style={styles.colorContainer}>
-        {menuColors.map((color, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.colorBox, { backgroundColor: color }]}
-            onPress={() => onChangeColor(index)}
-          />
-        ))}
-      </View>
+
+      <FlatList
+        data={menuColors}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <View style={styles.colorItem}>
+            <View style={[styles.colorBox, { backgroundColor: item }]} />
+            <TouchableOpacity style={styles.editButton} onPress={() => onChangeColor(index)}>
+              <Text style={styles.editText}>🎨</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => onRemoveColor(index)}>
+              <Text style={styles.deleteText}>🗑️</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+
+      <TouchableOpacity style={styles.addButton} onPress={onAddColor}>
+        <Text style={styles.addText}>➕ Agregar Color</Text>
+      </TouchableOpacity>
 
       {showConfirmation && (
         <ConfirmationAlert
@@ -69,6 +88,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 5,
   },
+  colorItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
   colorContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -79,6 +103,27 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 5,
     borderRadius: 5,
+  },
+  deleteButton: {
+    marginLeft: 10,
+    backgroundColor: "red",
+    padding: 5,
+    borderRadius: 5,
+  },
+  deleteText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  addButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#007BFF",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  addText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

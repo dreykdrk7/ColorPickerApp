@@ -1,16 +1,18 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
 const BottomMenu = ({ colors, onColorSelect }) => {
   return (
     <View style={styles.container}>
-      {colors.map((color, index) => (
-        <TouchableOpacity
-          key={index}
-          style={[styles.colorBox, { backgroundColor: color }]}
-          onPress={() => onColorSelect(color)}
-        />
-      ))}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+        {colors.map((color, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.colorBox, { backgroundColor: color }]}
+            onPress={() => onColorSelect(color)}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -22,6 +24,10 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#333",
     borderRadius: 15,
+  },
+  scrollContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   colorBox: {
     width: 40,
